@@ -31,6 +31,7 @@
   const burger = $('[data-burger]');
   const setMenu = (open) => {
     nav.classList.toggle('is-open', open);
+    header.classList.toggle('is-menu', open);
     burger.setAttribute('aria-expanded', String(open));
     burger.querySelector('.visually-hidden').textContent = open ? 'Cerrar menú' : 'Abrir menú';
     document.body.style.overflow = open ? 'hidden' : '';

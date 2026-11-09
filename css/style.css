@@ -147,10 +147,16 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .header {
   position: fixed; inset: 0 0 auto; z-index: 50;
   height: var(--header-h);
-  transition: background-color 0.35s var(--ease), border-color 0.35s var(--ease), transform 0.35s var(--ease);
-  border-bottom: 1px solid transparent;
+  transition: transform 0.35s var(--ease);
 }
-.header.is-scrolled {
+/* El fondo va en un pseudoelemento: un backdrop-filter en la propia cabecera
+   encerraría el menú móvil (position: fixed) dentro de su altura. */
+.header::before {
+  content: ''; position: absolute; inset: 0; z-index: -2;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.35s var(--ease), border-color 0.35s var(--ease), opacity 0.35s var(--ease);
+}
+.header.is-scrolled::before {
   background: rgb(14 15 17 / 0.86);
   -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
   border-bottom-color: var(--line);
@@ -192,6 +198,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
     position: fixed; inset: 0; z-index: -1;
     display: flex; flex-direction: column; justify-content: center; gap: var(--space-m);
     padding: calc(var(--header-h) + var(--space-m)) var(--gutter) var(--space-l);
+    overflow-y: auto; overscroll-behavior: contain;
     background: var(--ink);
     clip-path: circle(0% at calc(100% - 2.5rem) 2.25rem);
     visibility: hidden;
@@ -202,7 +209,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
   .nav ul a { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.2rem, 10vw, 3.4rem); letter-spacing: -0.02em; text-transform: none; color: var(--bone); }
   .nav ul a::after { display: none; }
   .nav__cta { display: inline-flex; align-self: flex-start; min-height: 3.5rem; padding: 0 1.8rem; }
-  .header:has(.nav.is-open) { background: transparent; border-bottom-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .header.is-menu::before { opacity: 0; }
 }
 
 @media (min-width: 960px) {
@@ -588,6 +595,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
   transform: translateY(150%); transition: transform 0.45s var(--ease);
 }
 .mobilebar.is-visible { transform: none; }
+.header.is-menu ~ .mobilebar { transform: translateY(150%); }
 .mobilebar a {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 3rem;
   border-radius: 999px; text-decoration: none;
